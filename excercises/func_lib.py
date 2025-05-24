@@ -3,35 +3,91 @@ import yfinance as yf
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import os
+import sys
 
-def create_hist_prices(start_date = '2000-01-01', end_date = '2024-05-01'):    
-    # Define the list of tickers
-    sp500_tickers = pd.read_html('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')[0]['Symbol'].tolist()
-    
-    # Filter out Class B shares that have a '.B' in the ticker name
-    sp500_tickers = [ticker for ticker in sp500_tickers if '.B' not in ticker]
-    
-    # Download historical prices for the list of tickers
-    historical_prices = yf.download(sp500_tickers, start=start_date, end=end_date, auto_adjust=False)
-    
-    # Filter and keep only columns where the first level of the MultiIndex is 'Adj Close'
-    historical_prices  = historical_prices.loc[:, historical_prices.columns.get_level_values(0) == 'Adj Close']
-    
-    # Remove the MultiIndex and keep only the second level
-    historical_prices.columns = historical_prices.columns.droplevel(0)   
-    
-    MIN_REQUIRED_NUM_OBS_PER_TICKER = 100
-    
-    # Count non-missing values for each ticker
-    ticker_counts = historical_prices.count()
-    
-    # Filter out tickers with fewer than n=MIN_REQUIRED_NUM_OBS_PER_TICKER=100 non-missing values
-    valid_tickers_mask = ticker_counts[ticker_counts >= MIN_REQUIRED_NUM_OBS_PER_TICKER].index
-    
-    # Filter the DataFrame based on valid tickers
-    historical_prices = historical_prices[valid_tickers_mask]
 
+import pandas as pd
+import pickle
+
+# Save the DataFrame to a pickle file
+def save_to_pickle(df, filename='historical_prices.pkl'):
+    with open(filename, 'wb') as f:
+        pickle.dump(df, f)
+
+
+# Load the DataFrame from a pickle file
+def load_from_pickle(filename='historical_prices.pkl'):
+    with open(filename, 'rb') as f:
+        df = pickle.load(f)
+    return df
+
+def create_hist_prices(start_date='2000-01-01', end_date='2024-05-01', data_file='historical_prices.pkl'):
+    # Check if the data file exists
+    if os.path.exists(data_file):
+        print(f"Loading historical prices from {data_file}")
+        historical_prices = load_from_pickle(data_file)
+    else:
+        # Define the list of tickers
+        sp500_tickers = pd.read_html('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')[0]['Symbol'].tolist()
+        
+        # Filter out Class B shares that have a '.B' in the ticker name
+        sp500_tickers = [ticker for ticker in sp500_tickers if '.B' not in ticker]
+        
+        # Download historical prices for the list of tickers
+        historical_prices = yf.download(sp500_tickers, start=start_date, end=end_date, auto_adjust=False)
+        
+        # Filter and keep only columns where the first level of the MultiIndex is 'Adj Close'
+        historical_prices  = historical_prices.loc[:, historical_prices.columns.get_level_values(0) == 'Adj Close']
+        
+        # Remove the MultiIndex and keep only the second level
+        historical_prices.columns = historical_prices.columns.droplevel(0)   
+        
+        MIN_REQUIRED_NUM_OBS_PER_TICKER = 100
+        
+        # Count non-missing values for each ticker
+        ticker_counts = historical_prices.count()
+        
+        # Filter out tickers with fewer than n=MIN_REQUIRED_NUM_OBS_PER_TICKER=100 non-missing values
+        valid_tickers_mask = ticker_counts[ticker_counts >= MIN_REQUIRED_NUM_OBS_PER_TICKER].index
+        
+        # Filter the DataFrame based on valid tickers
+        historical_prices = historical_prices[valid_tickers_mask]
+        
+        # Save the DataFrame to a CSV file
+        print(f"Saving historical prices to {data_file}")
+        save_to_pickle(historical_prices, data_file)
+        
     return historical_prices
+
+# def create_hist_prices(start_date = '2000-01-01', end_date = '2024-05-01'):    
+#     # Define the list of tickers
+#     sp500_tickers = pd.read_html('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')[0]['Symbol'].tolist()
+    
+#     # Filter out Class B shares that have a '.B' in the ticker name
+#     sp500_tickers = [ticker for ticker in sp500_tickers if '.B' not in ticker]
+    
+#     # Download historical prices for the list of tickers
+#     historical_prices = yf.download(sp500_tickers, start=start_date, end=end_date, auto_adjust=False)
+    
+#     # Filter and keep only columns where the first level of the MultiIndex is 'Adj Close'
+#     historical_prices  = historical_prices.loc[:, historical_prices.columns.get_level_values(0) == 'Adj Close']
+    
+#     # Remove the MultiIndex and keep only the second level
+#     historical_prices.columns = historical_prices.columns.droplevel(0)   
+    
+#     MIN_REQUIRED_NUM_OBS_PER_TICKER = 100
+    
+#     # Count non-missing values for each ticker
+#     ticker_counts = historical_prices.count()
+    
+#     # Filter out tickers with fewer than n=MIN_REQUIRED_NUM_OBS_PER_TICKER=100 non-missing values
+#     valid_tickers_mask = ticker_counts[ticker_counts >= MIN_REQUIRED_NUM_OBS_PER_TICKER].index
+    
+#     # Filter the DataFrame based on valid tickers
+#     historical_prices = historical_prices[valid_tickers_mask]
+
+#     return historical_prices
 
 
 
@@ -143,7 +199,7 @@ def compute_strat_perf(total_returns, cum_returns, calendar_returns, trading_str
     # Customizing the plot
     plt.title('Cumulative Returns Over Time', fontsize=16, fontweight='bold')
     plt.xlabel('Date', fontsize=14)
-    plt.ylabel('Cumulative Return', fontsize=14)
+    plt.ylabel('Cumulative Retu rn', fontsize=14)
     plt.grid(True)
     plt.xticks(rotation=45)
     plt.legend(title_fontsize='13', fontsize='11')
