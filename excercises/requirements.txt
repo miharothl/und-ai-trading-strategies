@@ -55,7 +55,7 @@ nbformat==5.10.4
 nest-asyncio==1.6.0
 notebook==6.5.6
 notebook_shim==0.2.4
-numpy==2.1.1
+numpy==1.26.0
 overrides==7.7.0
 packaging==24.1
 pandas==2.2.3
@@ -107,3 +107,4 @@ webencodings==0.5.1
 websocket-client==1.8.0
 websockets==15.0.1
 yfinance==0.2.61
+plotly
