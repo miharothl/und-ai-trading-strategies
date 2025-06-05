@@ -108,3 +108,4 @@ websocket-client==1.8.0
 websockets==15.0.1
 yfinance==0.2.61
 plotly
+seaborn
