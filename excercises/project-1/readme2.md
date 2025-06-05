@@ -20,7 +20,7 @@ conda activate und-ai-trading-strategies
 
 2. **Install required packeages:**
 ```bash
-pip install -r requireThen open Preparing-for-data-analysis-project-student.ipynb to begin.
+pip install -r requirements.txt
 ```
 
 ## Launching Jupyter Lab
@@ -28,5 +28,5 @@ Once the environment is ready, start Jupyter Lab:
 ```bash
 jupyter lab
 ```
-   
-For any additional utility functions, refer to `func_lib.py`.
+
+Then open `Preparing-for-data-analysis-project-student.ipynb` to begin. For any additional utility functions, refer to `func_lib.py`.
