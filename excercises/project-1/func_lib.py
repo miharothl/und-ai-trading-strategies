@@ -295,23 +295,16 @@ def calculate_percent_change(df: pd.DataFrame, period: int = 1):
 
 def resample_returns_daily_to_monthly(df: pd.DataFrame) -> pd.DataFrame:
     '''
-        Resamples returns for daily to monthly.
-        
-        Inputs:
-            df: dataframe to be used an input
-            
-        Returns:
-            df: a copy of dataframe with resampled data
-        
-        Used for tasks:
-        - Interpolate stock returns from daily to monthly
-    '''
-    df_copy = df.copy()
-    df_copy['1_MONTH_RETURN'] = (1 + df_copy['1_DAY_RETURN']).resample('ME').prod() - 1
+        Resamples daily returns to monthly returns.
 
-    df_copy_filtered = df_copy[df_copy['1_MONTH_RETURN'].notna()] 
-    
-    return df_copy_filtered
+        Inputs:
+            df: daily returns dataframe with '1_DAY_RETURN' and datetime index
+
+        Returns:
+            DataFrame with datetime index at monthly frequency and '1_MONTH_RETURN' column
+    '''
+    monthly_returns = (1 + df['1_DAY_RETURN']).resample('ME').prod() - 1
+    return monthly_returns.to_frame(name='1_MONTH_RETURN')
 
     
 def set_index_and_sort_by_index(df: pd.DataFrame, col):
