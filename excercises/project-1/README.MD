@@ -14,8 +14,8 @@ This project is a Jupyter Notebook-based environment designed to help students p
 1. **Create and activate the Conda environment:**
 
 ```bash
-conda create --name und-ai-trading-strategies python=3.10
-conda activate und-ai-trading-strategies
+conda create --name und-ai-trading-strategies-p1 python=3.10
+conda activate und-ai-trading-strategies-p1
 ```
 
 2. **Install required packeages:**
