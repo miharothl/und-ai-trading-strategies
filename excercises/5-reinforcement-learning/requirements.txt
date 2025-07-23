@@ -137,3 +137,6 @@ Werkzeug==3.0.3
 widgetsnbextension==4.0.11
 wrapt==1.16.0
 yfinance==0.2.41
+
+####
+jupyterlab_vim
