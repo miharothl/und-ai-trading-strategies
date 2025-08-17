@@ -1,3 +1,9 @@
+*.keras
+*.png
+.DS_Store
+.exit
+
+
 # Ignore data pickle file
 historical_prices.pkl
 
